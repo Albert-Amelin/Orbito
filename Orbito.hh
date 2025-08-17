@@ -1,6 +1,9 @@
 #include<iostream>
 #include<cmath>
 #include<array>
+#include<vector>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -29,6 +32,7 @@ private:
 
 public:
     Game(array<char,16> Feld);
+    Game(string s);
     Game(Game const& G);
     ~Game();
 
@@ -71,6 +75,8 @@ public:
 
     friend bool const operator==(Game const& G1, Game const& G2);
     friend bool const same(Game const& G1, Game const& G2);
+    friend ostream& operator<<(ostream& ostr, Game const& G);
+    friend bool const contains(Game const& G, vector<Game> v);
 };
 
 int quad_to_dec(int n);

@@ -90,6 +90,13 @@ Game::Game(array<char,16> Feld){
     }
 }
 
+
+Game::Game(string s){
+    for(int i = 0; i < 16; i++){
+        M_Feld.at(i) = s.at(i);
+    }
+}
+
 Game::Game(Game const& G){
     for(int i = 0; i<4; i++){
         for(int j = 0; j<4; j++){
@@ -707,6 +714,21 @@ bool const same(Game const& G1, Game const& G2){
     for(int i = 0; i<3; i++){
         G2_copy.turn_90_deg();
         if(G1 == G2_copy) return true;
+    }
+    return false;
+}
+
+ostream& operator<<(ostream& ostr, Game const& G){
+    for(int i = 0; i<16; i++){
+        ostr << G.M_Feld.at(i);
+    }
+    ostr << "\n";
+    return ostr;
+}
+
+bool const contains(Game const& G, vector<Game> v){
+    for(int i = 0; i < v.size(); i++){
+        if(G == v.at(i)) return true;
     }
     return false;
 }
