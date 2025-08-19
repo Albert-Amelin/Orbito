@@ -37,6 +37,13 @@ int transform(int n){
     return -1;
 }
 
+bool contains(string s, vector<string> v){
+    for(int i = 0; i < v.size(); i++){
+        if(s == v.at(i)) return true;
+    }
+    return false;
+}
+
 Move::Move(double win_chance = 0, int from = 0, int to = 0, int pos = 0){
     M_win_chance = win_chance;
     M_from = from;

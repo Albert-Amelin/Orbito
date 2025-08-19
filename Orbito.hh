@@ -84,3 +84,4 @@ int dec_to_quad(int n);
 int dist_quad(int a, int b);
 int dist_dec(int a, int b);
 int transform(int n);
+bool contains(string s, vector<string> v);
