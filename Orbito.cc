@@ -145,33 +145,38 @@ bool same_game(string const& game, string const& eval_game){
     return true;
 }
 
-void eval_all_Pos(string last_eval, string now, string now_eval, char Player){
+void eval_all_Pos(string last_eval, string now, string now_eval, char Player, int positions){
     string game;
     string game_move;
     string game_move_place;
     string last_game;
     char Enemy;
-    array<int,4> best_move = {0,0,0,0};
+    // Format: {eval, from, to, pos}
+    array<int,4> best_move;
     if(Player == 'X'){
         Enemy = 'O';
-        best_move.at(0) = -1;
     } 
     if(Player == 'O'){
         Enemy = 'X';
-        best_move.at(0) = 3;
     } 
-    // Format: {eval, from, to, pos}
-    ifstream last_eval_file(last_eval);
     ifstream game_file(now);
     ofstream game_file_eval(now_eval);
-    if(last_eval_file.is_open() && game_file.is_open() && game_file_eval.is_open()){
+    if(game_file.is_open() && game_file_eval.is_open()){
+        int cnt = 0;
+
         while(getline(game_file, game)){
+            cout << (100.0 * cnt) / positions << "% " << "von " << now_eval << " berechnet.\n";
             game_file_eval << game;
             if(win(game, 'X') && win(game, 'O')) game_file_eval << 1 << endl;
             else if(win(game, 'X')) game_file_eval << 2 << endl;
             else if(win(game, 'O')) game_file_eval << 0 << endl;
             else{
+                best_move = {0,0,0,0};
+                if(Player == 'X') best_move.at(0) = -1;
+                if(Player == 'O') best_move.at(0) = 3;
+
                 for(int from = 0; from < 16; from++){
+                    if(Player == 'X' && best_move.at(0) < 2 || Player == 'O' && best_move.at(0) > 0){
                     for(int to = 0; to < 16; to++){
                         if(valid_move_dec(game, from, to, Enemy)){
                             game_move = game;
@@ -181,19 +186,19 @@ void eval_all_Pos(string last_eval, string now, string now_eval, char Player){
                                     game_move_place = game_move;
                                     place_dec(game_move_place, pos, Player);
                                     orbit(game_move_place);
-                                    last_eval_file.seekg(0);
+                                    ifstream last_eval_file(last_eval);
                                     while(getline(last_eval_file, last_game)){
                                         if(same_game(game_move_place, last_game)){
                                             if(Player == 'X'){
-                                                if(last_game.at(16) > best_move.at(0)){
-                                                    best_move.at(0) = last_game.at(16);
+                                                if((last_game.at(16) - '0') > best_move.at(0)){
+                                                    best_move.at(0) = (last_game.at(16) - '0');
                                                     best_move.at(1) = from;
                                                     best_move.at(2) = to;
                                                     best_move.at(3) = pos;
                                                 }
                                             }else if(Player == 'O'){
-                                                if(last_game.at(16) > best_move.at(0)){
-                                                    best_move.at(0) = last_game.at(16);
+                                                if((int)(last_game.at(16) - '0') < (int)best_move.at(0)){
+                                                    best_move.at(0) = (last_game.at(16) - '0');
                                                     best_move.at(1) = from;
                                                     best_move.at(2) = to;
                                                     best_move.at(3) = pos;
@@ -201,9 +206,11 @@ void eval_all_Pos(string last_eval, string now, string now_eval, char Player){
                                             }
                                         }
                                     }
+                                    last_eval_file.close();
                                 }
                             }
                         }
+                    }
                     }
                 }
                 game_file_eval << best_move.at(0);
@@ -212,10 +219,13 @@ void eval_all_Pos(string last_eval, string now, string now_eval, char Player){
                 if(best_move.at(2) < 10) game_file_eval << 0;
                 game_file_eval << best_move.at(2);
                 if(best_move.at(3) < 10) game_file_eval << 0;
-                game_file_eval << best_move.at(3); 
+                game_file_eval << best_move.at(3) << endl; 
             }
+            cnt++;
         }
     }
+    game_file.close();
+    game_file_eval.close();
 }
 
 Move::Move(double win_chance = 0, int from = 0, int to = 0, int pos = 0){

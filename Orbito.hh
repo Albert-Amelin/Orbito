@@ -104,6 +104,6 @@ void place_quad(string& game, int pos, char Player);
 
 bool same_game(string const& game, string const& eval_game);
 
-void eval_all_Pos(string last_eval, string now, string now_eval, char Player);
+void eval_all_Pos(string last_eval, string now, string now_eval, char Player, int positions);
 
 

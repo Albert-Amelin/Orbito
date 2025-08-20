@@ -4,7 +4,21 @@
 
 int main(){
 
-    
+
+    eval_all_Pos("AllPositions14eval.txt", "AllPositions13.txt", "AllPositions13eval.txt", 'O', 960960);
+    eval_all_Pos("AllPositions13eval.txt", "AllPositions12.txt", "AllPositions12eval.txt", 'X', 1681680);
+    eval_all_Pos("AllPositions12eval.txt", "AllPositions11.txt", "AllPositions11eval.txt", 'O', 2018016);
+    eval_all_Pos("AllPositions11eval.txt", "AllPositions10.txt", "AllPositions10eval.txt", 'X', 2018016);
+    eval_all_Pos("AllPositions10eval.txt", "AllPositions9.txt", "AllPositions9eval.txt", 'O', 1441440);
+    eval_all_Pos("AllPositions9eval.txt", "AllPositions8.txt", "AllPositions8eval.txt", 'X', 900900);
+    eval_all_Pos("AllPositions8eval.txt", "AllPositions7.txt", "AllPositions7eval.txt", 'O', 400400);
+    eval_all_Pos("AllPositions7eval.txt", "AllPositions6.txt", "AllPositions6eval.txt", 'X', 160160);
+    eval_all_Pos("AllPositions6eval.txt", "AllPositions5.txt", "AllPositions5eval.txt", 'O', 43680);
+    eval_all_Pos("AllPositions5eval.txt", "AllPositions4.txt", "AllPositions4eval.txt", 'X', 10920);
+    eval_all_Pos("AllPositions4eval.txt", "AllPositions3.txt", "AllPositions3eval.txt", 'O', 1680);
+    eval_all_Pos("AllPositions3eval.txt", "AllPositions2.txt", "AllPositions2eval.txt", 'X', 240);
+    eval_all_Pos("AllPositions2eval.txt", "AllPositions1.txt", "AllPositions1eval.txt", 'O', 16);
+    eval_all_Pos("AllPositions1eval.txt", "AllPositions0.txt", "AllPositions0eval.txt", 'X', 1);
 
     // ifstream game_file("AllPositions16.txt");
     // ofstream eval_file("AllPositions16eval.txt");
