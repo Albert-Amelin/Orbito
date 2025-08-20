@@ -86,3 +86,24 @@ int dist_quad(int a, int b);
 int dist_dec(int a, int b);
 int transform(int n);
 bool contains(string s, vector<string> v);
+
+// Funktionen aus Game Klasse aber nur mit string
+
+bool win(string const& game, char Player);
+void orbit(string& game);
+
+bool valid_move_dec(string const& game, int from, int to, char Player);
+bool valid_move_quad(string const& game, int from, int to, char Player);
+void move_dec(string& game, int from, int to, char Player);
+void move_quad(string& game, int from, int to, char Player);
+
+bool valid_place_dec(string const& game, int pos);
+bool valid_place_quad(string const& game, int pos);
+void place_dec(string& game, int pos, char Player);
+void place_quad(string& game, int pos, char Player);
+
+bool same_game(string const& game, string const& eval_game);
+
+void eval_all_Pos(string last_eval, string now, string now_eval, char Player);
+
+

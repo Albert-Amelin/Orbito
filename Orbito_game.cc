@@ -4,34 +4,68 @@
 
 int main(){
 
-    vector<string> allPos;
-    string line;
-    unsigned int number_of_Pos = 102960;
-    ifstream game_file("AllPositions15.txt");
-    if(game_file.is_open()){
-        while(getline(game_file, line)){
-            for(int pos = 0; pos < 16; pos++){
-                string copy = line;
-                if(copy.at(pos) == ' '){
-                    copy.at(pos) = 'O';
-                    allPos.push_back(copy);
-                    cout << (100.0 * allPos.size() / number_of_Pos) << "% " << "der neuen Positionen für AllPositions16.txt berechnet.\n";
-                }
-            }
-        }
-    }
-    game_file.close();
+    
 
-    cout << "Entferne alle Duplikate.\n";
-    sort( allPos.begin(), allPos.end() );
-    allPos.erase( unique( allPos.begin(), allPos.end() ), allPos.end() );
+    // ifstream game_file("AllPositions16.txt");
+    // ofstream eval_file("AllPositions16eval.txt");
+    // string game;
+    // if(game_file.is_open() && eval_file.is_open()){
+    //     while(getline(game_file, game)){
+    //         eval_file << game;
+    //         if(win(game, 'X') && win(game, 'O')) eval_file << 1 << endl;
+    //         else if(win(game, 'X')) eval_file << 2 << endl;
+    //         else if(win(game, 'O')) eval_file << 0 << endl;
+    //         else{
+    //             for(int i = 0; i < 5; i++){
+    //                 orbit(game);
+    //                 if(win(game, 'X') && win(game, 'O')){
+    //                     eval_file << 1 << endl;
+    //                     break;
+    //                 }else if(win(game, 'X')){
+    //                     eval_file << 2 << endl;
+    //                     break;
+    //                 }else if(win(game, 'O')){
+    //                     eval_file << 0 << endl;
+    //                     break;
+    //                 }else if(i == 4){
+    //                     eval_file << 1 << endl;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // game_file.close();
+    // eval_file.close();
 
-    cout << "Schreibe alle Elemente in AllPositions16.txt.\n";
-    ofstream next_game_file("AllPositions16.txt");
-    for(int i = 0; i < allPos.size(); i++){
-        next_game_file << allPos.at(i) << endl;
-    }
-    next_game_file.close();
+
+    // vector<string> allPos;
+    // string line;
+    // unsigned int number_of_Pos = 102960;
+    // ifstream game_file("AllPositions15.txt");
+    // if(game_file.is_open()){
+    //     while(getline(game_file, line)){
+    //         for(int pos = 0; pos < 16; pos++){
+    //             string copy = line;
+    //             if(copy.at(pos) == ' '){
+    //                 copy.at(pos) = 'O';
+    //                 allPos.push_back(copy);
+    //                 cout << (100.0 * allPos.size() / number_of_Pos) << "% " << "der neuen Positionen für AllPositions16.txt berechnet.\n";
+    //             }
+    //         }
+    //     }
+    // }
+    // game_file.close();
+
+    // cout << "Entferne alle Duplikate.\n";
+    // sort( allPos.begin(), allPos.end() );
+    // allPos.erase( unique( allPos.begin(), allPos.end() ), allPos.end() );
+
+    // cout << "Schreibe alle Elemente in AllPositions16.txt.\n";
+    // ofstream next_game_file("AllPositions16.txt");
+    // for(int i = 0; i < allPos.size(); i++){
+    //     next_game_file << allPos.at(i) << endl;
+    // }
+    // next_game_file.close();
 
 
     // array<char, 16> Feld = {' ', ' ', ' ', ' ',

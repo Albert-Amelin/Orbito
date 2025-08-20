@@ -44,6 +44,180 @@ bool contains(string s, vector<string> v){
     return false;
 }
 
+bool win(string const& game, char Player){
+    for(int i = 0; i<4; i++){
+        if(game.at(4*i+0) == Player &&
+           game.at(4*i+1) == Player &&
+           game.at(4*i+2) == Player &&
+           game.at(4*i+3) == Player) return true;
+    }
+    for(int i = 0; i<4; i++){
+        if(game.at(0+i) == Player &&
+           game.at(4+i) == Player &&
+           game.at(8+i) == Player &&
+           game.at(12+i) == Player) return true;
+    }
+    if(game.at(0) == Player &&
+       game.at(5) == Player &&
+       game.at(10) == Player &&
+       game.at(15) == Player) return true;
+    if(game.at(3) == Player &&
+       game.at(6) == Player &&
+       game.at(9) == Player &&
+       game.at(12) == Player) return true;
+    return false;
+}
+
+void orbit(string& game){
+    char temp = game.at(0);
+    for(int i = 0; i<3; i++){
+        game.at(i) = game.at(i+1);
+    }
+    for(int i = 3; i<15; i += 4){
+        game.at(i) = game.at(i+4);
+    }
+    for(int i = 15; i>12; i--){
+        game.at(i) = game.at(i-1);
+    }
+    for(int i = 12; i>4; i -= 4){
+        game.at(i) = game.at(i-4);
+    }
+    game.at(4) = temp;
+    temp = game.at(5);
+    game.at(5) = game.at(6);
+    game.at(6) = game.at(10);
+    game.at(10) = game.at(9);
+    game.at(9) = temp;
+}
+
+bool valid_move_dec(string const& game, int from, int to, char Player){
+    if(from == to && game.at(from) == Player) return true;
+    if(dist_dec(from, to) > 1 ||
+       game.at(from) != Player ||
+       game.at(to) != ' ' ||
+       from < 0 || from > 15 ||
+       to < 0 || to > 15) return false;
+    return true;
+}
+
+bool valid_move_quad(string const& game, int from, int to, char Player){
+    return valid_move_dec(game, quad_to_dec(from), quad_to_dec(to), Player);
+}
+
+void move_dec(string& game, int from, int to, char Player){
+    if(valid_move_dec(game, from, to, Player)){
+       game.at(from) = ' ';
+       game.at(to) = Player;
+    }else{
+        cout << "Dieser Zug ist nicht legal!" << endl;
+    }
+}
+
+void move_quad(string& game, int from, int to, char Player){
+    move_dec(game, quad_to_dec(from), quad_to_dec(to), Player);
+}
+
+bool valid_place_dec(string const& game, int pos){
+    if(game.at(pos) != ' ' || pos < 0 || pos > 15) return false;
+    return true;
+}
+
+bool valid_place_quad(string const& game, int pos){
+    return valid_place_dec(game, quad_to_dec(pos));
+}
+
+void place_dec(string& game, int pos, char Player){
+    if(valid_place_dec(game, pos)){
+        game.at(pos) = Player;
+    }else{
+        cout << "Dieser Zug ist nicht legal!" << endl;
+    }
+}
+
+void place_quad(string& game, int pos, char Player){
+    place_dec(game, quad_to_dec(pos), Player);
+}
+
+bool same_game(string const& game, string const& eval_game){
+    for(int i = 0; i < 16; i++){
+        if(game.at(i) != eval_game.at(i)) return false;
+    }
+    return true;
+}
+
+void eval_all_Pos(string last_eval, string now, string now_eval, char Player){
+    string game;
+    string game_move;
+    string game_move_place;
+    string last_game;
+    char Enemy;
+    array<int,4> best_move = {0,0,0,0};
+    if(Player == 'X'){
+        Enemy = 'O';
+        best_move.at(0) = -1;
+    } 
+    if(Player == 'O'){
+        Enemy = 'X';
+        best_move.at(0) = 3;
+    } 
+    // Format: {eval, from, to, pos}
+    ifstream last_eval_file(last_eval);
+    ifstream game_file(now);
+    ofstream game_file_eval(now_eval);
+    if(last_eval_file.is_open() && game_file.is_open() && game_file_eval.is_open()){
+        while(getline(game_file, game)){
+            game_file_eval << game;
+            if(win(game, 'X') && win(game, 'O')) game_file_eval << 1 << endl;
+            else if(win(game, 'X')) game_file_eval << 2 << endl;
+            else if(win(game, 'O')) game_file_eval << 0 << endl;
+            else{
+                for(int from = 0; from < 16; from++){
+                    for(int to = 0; to < 16; to++){
+                        if(valid_move_dec(game, from, to, Enemy)){
+                            game_move = game;
+                            move_dec(game_move, from, to, Enemy);
+                            for(int pos = 0; pos < 16; pos++){
+                                if(valid_place_dec(game_move, pos)){
+                                    game_move_place = game_move;
+                                    place_dec(game_move_place, pos, Player);
+                                    orbit(game_move_place);
+                                    last_eval_file.seekg(0);
+                                    while(getline(last_eval_file, last_game)){
+                                        if(same_game(game_move_place, last_game)){
+                                            if(Player == 'X'){
+                                                if(last_game.at(16) > best_move.at(0)){
+                                                    best_move.at(0) = last_game.at(16);
+                                                    best_move.at(1) = from;
+                                                    best_move.at(2) = to;
+                                                    best_move.at(3) = pos;
+                                                }
+                                            }else if(Player == 'O'){
+                                                if(last_game.at(16) > best_move.at(0)){
+                                                    best_move.at(0) = last_game.at(16);
+                                                    best_move.at(1) = from;
+                                                    best_move.at(2) = to;
+                                                    best_move.at(3) = pos;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                game_file_eval << best_move.at(0);
+                if(best_move.at(1) < 10) game_file_eval << 0;
+                game_file_eval << best_move.at(1);
+                if(best_move.at(2) < 10) game_file_eval << 0;
+                game_file_eval << best_move.at(2);
+                if(best_move.at(3) < 10) game_file_eval << 0;
+                game_file_eval << best_move.at(3); 
+            }
+        }
+    }
+}
+
 Move::Move(double win_chance = 0, int from = 0, int to = 0, int pos = 0){
     M_win_chance = win_chance;
     M_from = from;
