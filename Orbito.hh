@@ -2,9 +2,9 @@
 #include<cmath>
 #include<array>
 #include<vector>
-#include <fstream>
-#include <string>
-#include <bits/stdc++.h>
+#include<fstream>
+#include<string>
+#include<bits/stdc++.h>
 
 using namespace std;
 
@@ -103,6 +103,9 @@ void place_dec(string& game, int pos, char Player);
 void place_quad(string& game, int pos, char Player);
 
 bool same_game(string const& game, string const& eval_game);
+void sort_Pos(string const& file);
+string find_game_eval(string const& eval_file, string game);
+string find_game_eval(vector<string> const& allPos, string const& game);
 
 void eval_all_Pos(string last_eval, string now, string now_eval, char Player, int positions);
 
