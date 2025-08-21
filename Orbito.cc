@@ -159,6 +159,14 @@ void eval_all_Pos(string last_eval, string now, string now_eval, char Player, in
     if(Player == 'O'){
         Enemy = 'X';
     } 
+
+    vector<string> allPos;
+    ifstream last_eval_file(last_eval);
+    while(getline(last_eval_file, last_game)){
+        allPos.push_back(last_game);
+    }
+    last_eval_file.close();
+
     ifstream game_file(now);
     ofstream game_file_eval(now_eval);
     if(game_file.is_open() && game_file_eval.is_open()){
@@ -186,19 +194,21 @@ void eval_all_Pos(string last_eval, string now, string now_eval, char Player, in
                                     game_move_place = game_move;
                                     place_dec(game_move_place, pos, Player);
                                     orbit(game_move_place);
-                                    ifstream last_eval_file(last_eval);
-                                    while(getline(last_eval_file, last_game)){
-                                        if(same_game(game_move_place, last_game)){
+                                    // ifstream last_eval_file(last_eval);
+                                    // while(getline(last_eval_file, last_game)){
+                                    for(int i = 0; i < allPos.size(); i++){
+                                        // if(same_game(game_move_place, last_game)){
+                                        if(same_game(game_move_place, allPos.at(i))){
                                             if(Player == 'X'){
-                                                if((last_game.at(16) - '0') > best_move.at(0)){
-                                                    best_move.at(0) = (last_game.at(16) - '0');
+                                                if((allPos.at(i).at(16) - '0') > best_move.at(0)){
+                                                    best_move.at(0) = (allPos.at(i).at(16) - '0');
                                                     best_move.at(1) = from;
                                                     best_move.at(2) = to;
                                                     best_move.at(3) = pos;
                                                 }
                                             }else if(Player == 'O'){
-                                                if((int)(last_game.at(16) - '0') < (int)best_move.at(0)){
-                                                    best_move.at(0) = (last_game.at(16) - '0');
+                                                if((allPos.at(i).at(16) - '0') < best_move.at(0)){
+                                                    best_move.at(0) = (allPos.at(i).at(16) - '0');
                                                     best_move.at(1) = from;
                                                     best_move.at(2) = to;
                                                     best_move.at(3) = pos;
@@ -206,7 +216,7 @@ void eval_all_Pos(string last_eval, string now, string now_eval, char Player, in
                                             }
                                         }
                                     }
-                                    last_eval_file.close();
+                                    // last_eval_file.close();
                                 }
                             }
                         }

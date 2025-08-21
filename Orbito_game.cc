@@ -5,7 +5,6 @@
 int main(){
 
 
-    eval_all_Pos("AllPositions14eval.txt", "AllPositions13.txt", "AllPositions13eval.txt", 'O', 960960);
     eval_all_Pos("AllPositions13eval.txt", "AllPositions12.txt", "AllPositions12eval.txt", 'X', 1681680);
     eval_all_Pos("AllPositions12eval.txt", "AllPositions11.txt", "AllPositions11eval.txt", 'O', 2018016);
     eval_all_Pos("AllPositions11eval.txt", "AllPositions10.txt", "AllPositions10eval.txt", 'X', 2018016);
