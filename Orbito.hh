@@ -33,7 +33,7 @@ private:
 
 public:
     Game(array<char,16> Feld);
-    Game(string s);
+    Game(string const& s);
     Game(Game const& G);
     ~Game();
 
@@ -41,6 +41,7 @@ public:
     bool win(char Player) const;
     void orbit();
     void turn_90_deg();
+    string to_string() const;
 
     bool valid_move_dec(int from, int to, char Player) const;
     bool valid_move_quad(int from, int to, char Player) const;
@@ -78,6 +79,10 @@ public:
     friend bool const same(Game const& G1, Game const& G2);
     friend ostream& operator<<(ostream& ostr, Game const& G);
     friend bool const contains(Game const& G, vector<Game> v);
+
+    int pieces() const;
+    void perfect_Bot_turn(char Player);
+    void Player_vs_perfect_Bot();
 };
 
 int quad_to_dec(int n);

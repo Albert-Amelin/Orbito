@@ -349,7 +349,7 @@ Game::Game(array<char,16> Feld){
 }
 
 
-Game::Game(string s){
+Game::Game(string const& s){
     for(int i = 0; i < 16; i++){
         M_Feld.at(i) = s.at(i);
     }
@@ -449,6 +449,14 @@ void Game::turn_90_deg(){
     M_Feld.at(6) = M_Feld.at(10);
     M_Feld.at(10) = M_Feld.at(9);
     M_Feld.at(9) = temp;
+}
+
+string Game::to_string() const{
+    string ret;
+    for(int i = 0; i<16; i++){
+        ret.push_back(M_Feld.at(i));
+    }
+    return ret;
 }
 
 bool Game::valid_move_dec(int from, int to, char Player) const{
@@ -989,4 +997,116 @@ bool const contains(Game const& G, vector<Game> v){
         if(G == v.at(i)) return true;
     }
     return false;
+}
+
+int Game::pieces() const{
+    int ret = 0;
+    for(int i = 0; i<16; i++){
+        if(M_Feld.at(i) != ' ') ret++;
+    }
+    return ret;
+}
+
+void Game::perfect_Bot_turn(char Player){
+    string eval;
+    string game;
+    string game_eval;
+    char enemy;
+    if(Player == 'X') enemy = 'O';
+    else if(Player == 'O') enemy = 'X';
+    int pieces = this->pieces();
+    if(pieces == 1) eval = "AllPositions1eval.txt";
+    if(pieces == 2) eval = "AllPositions2eval.txt";
+    if(pieces == 3) eval = "AllPositions3eval.txt";
+    if(pieces == 4) eval = "AllPositions4eval.txt";
+    if(pieces == 5) eval = "AllPositions5eval.txt";
+    if(pieces == 6) eval = "AllPositions6eval.txt";
+    if(pieces == 7) eval = "AllPositions7eval.txt";
+    if(pieces == 8) eval = "AllPositions8eval.txt";
+    if(pieces == 9) eval = "AllPositions9eval.txt";
+    if(pieces == 10) eval = "AllPositions10eval.txt";
+    if(pieces == 11) eval = "AllPositions11eval.txt";
+    if(pieces == 12) eval = "AllPositions12eval.txt";
+    if(pieces == 13) eval = "AllPositions13eval.txt";
+    if(pieces == 14) eval = "AllPositions14eval.txt";
+    if(pieces == 15) eval = "AllPositions15eval.txt";
+    game = this->to_string();
+    game_eval = find_game_eval(eval, game);
+    int from = 10*(game_eval.at(17) - '0') + (game_eval.at(18) - '0');
+    int to = 10*(game_eval.at(19) - '0') + (game_eval.at(20) - '0');
+    int pos = 10*(game_eval.at(21) - '0') + (game_eval.at(22) - '0');
+    cout << "Zug vom perfekten Bot " << Player << ":\n";
+    cout << dec_to_quad(from) << " -- " << dec_to_quad(to) << endl;
+    this->move_dec(from, to, enemy);
+    this->print();
+    cout << dec_to_quad(pos) << endl;
+    this->place_dec(pos, Player);
+    this->print();
+    cout << 0 << endl;
+    this->orbit();
+    this->print();
+}
+
+void Game::Player_vs_perfect_Bot(){
+    cout << "Hinweise: Die Eingabe der Züge muss die Form \"XY\" haben, wobei X die Zeilenkoordinate ist, und Y die Spaltenkoordinate.\nX kann weg gelassen werden, falls es 0 ist. Alle Eingaben müssen Integer sein.\nFalls ein Stein des Gegners nicht bewegt werden soll, kann man ihn wieder auf seine ursprüngliche Position verschieben.\nMöchtest du mit \"X\" oder mit \"O\" spielen?\n";
+    char Player;
+    char Bot;
+    cin >> Player;
+    while(Player != 'X' && Player != 'O'){
+        cout << "Falsche Eingabe. Versuche es nochmal.\n";
+        cin >> Player;
+    }
+    if(Player == 'X') Bot = 'O';
+    if(Player == 'O') Bot = 'X';
+    this->print();
+    if(Player == 'X'){
+        this->player_turn_first(Player);
+        this->perfect_Bot_turn(Bot);
+    }else if(Player == 'O'){
+        this->Bot2_turn_first(Bot);
+        this->player_turn(Player);
+    }
+    while(!this->full_Board()){
+        if(Player == 'X') this->player_turn(Player);
+        else if(Bot == 'X') this->perfect_Bot_turn(Bot);
+        if(this->win(Player) && !this->win(Bot)){
+            cout << "Der Spieler hat gewonnen!\n";
+            return;
+        }else if(this->win(Bot) && !this->win(Player)){
+            cout << "Der Bot hat gewonnen!\n";
+            return;
+        }else if(this->win(Player) && this->win(Bot)){
+            cout << "Unentschieden!\n";
+            return;
+        }
+        if(Player == 'O') this->player_turn(Player);
+        else if(Bot == 'O') this->perfect_Bot_turn(Bot);
+        if(this->win(Player) && !this->win(Bot)){
+            cout << "Der Spieler hat gewonnen!\n";
+            return;
+        }else if(this->win(Bot) && !this->win(Player)){
+            cout << "Der Bot hat gewonnen!\n";
+            return;
+        }else if(this->win(Player) && this->win(Bot)){
+            cout << "Unentschieden!\n";
+            return;
+        }
+    }
+    cout << "Das Spielfeld ist voll. Es wird noch 5 Mal gedreht und geschaut, ob sich noch was ergibt.\n";
+    for(int i = 0; i<5; i++){
+        cout << i + 1 << endl;
+        this->orbit();
+        this->print();
+        if(this->win(Player) && !this->win(Bot)){
+            cout << "Der Spieler hat gewonnen!\n";
+            return;
+        }else if(this->win(Bot) && !this->win(Player)){
+            cout << "Der Bot hat gewonnen!\n";
+            return;
+        }else if(this->win(Player) && this->win(Bot)){
+            cout << "Unentschieden!\n";
+            return;
+        }
+    }
+    cout << "Unentschieden!\n";
 }
