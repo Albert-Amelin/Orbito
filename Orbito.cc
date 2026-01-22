@@ -208,13 +208,14 @@ string find_game_eval(vector<string> const& allPos, string const& game){
     return allPos.at(pivot);
 }
 
-void eval_all_Pos(string last_eval, string now, string now_eval, char Player, int positions){
+void eval_all_Pos(string last_eval, string now, string now_eval, char Player, int positions, int pieces){
     string game;
     string game_move;
     string game_move_place;
     string last_game;
     string eval_game;
     char Enemy;
+    char draw = 'A';
     // Format: {eval, from, to, pos}
     array<int,4> best_move;
     if(Player == 'X'){
@@ -239,16 +240,16 @@ void eval_all_Pos(string last_eval, string now, string now_eval, char Player, in
         while(getline(game_file, game)){
             cout << (100.0 * cnt) / positions << "% " << "von " << now_eval << " berechnet.\n";
             game_file_eval << game;
-            if(win(game, 'X') && win(game, 'O')) game_file_eval << 1 << endl;
-            else if(win(game, 'X')) game_file_eval << 2 << endl;
-            else if(win(game, 'O')) game_file_eval << 0 << endl;
+            if(win(game, 'X') && win(game, 'O')) game_file_eval << draw << endl;
+            else if(win(game, 'X')) game_file_eval << (char)(draw + 22 - pieces) << endl;
+            else if(win(game, 'O')) game_file_eval << (char)(draw - 22 + pieces) << endl;
             else{
                 best_move = {0,0,0,0};
-                if(Player == 'X') best_move.at(0) = -1;
-                if(Player == 'O') best_move.at(0) = 3;
+                if(Player == 'X') best_move.at(0) = 58;
+                if(Player == 'O') best_move.at(0) = 72;
 
                 for(int from = 0; from < 16; from++){
-                    if(Player == 'X' && best_move.at(0) < 2 || Player == 'O' && best_move.at(0) > 0){
+                    if(Player == 'X' && best_move.at(0) < (draw + 21 - pieces) || Player == 'O' && best_move.at(0) > (draw - 21 + pieces)){
                     for(int to = 0; to < 16; to++){
                         if(valid_move_dec(game, from, to, Enemy)){
                             game_move = game;
@@ -260,15 +261,15 @@ void eval_all_Pos(string last_eval, string now, string now_eval, char Player, in
                                     orbit(game_move_place);
                                     eval_game = find_game_eval(allPos, game_move_place);
                                     if(Player == 'X'){
-                                        if((eval_game.at(16) - '0') > best_move.at(0)){
-                                            best_move.at(0) = (eval_game.at(16) - '0');
+                                        if(eval_game.at(16) > best_move.at(0)){
+                                            best_move.at(0) = eval_game.at(16);
                                             best_move.at(1) = from;
                                             best_move.at(2) = to;
                                             best_move.at(3) = pos;
                                         }
                                     }else if(Player == 'O'){
-                                        if((eval_game.at(16) - '0') < best_move.at(0)){
-                                            best_move.at(0) = (eval_game.at(16) - '0');
+                                        if(eval_game.at(16) < best_move.at(0)){
+                                            best_move.at(0) = eval_game.at(16);
                                             best_move.at(1) = from;
                                             best_move.at(2) = to;
                                             best_move.at(3) = pos;
@@ -280,7 +281,7 @@ void eval_all_Pos(string last_eval, string now, string now_eval, char Player, in
                     }
                     }
                 }
-                game_file_eval << best_move.at(0);
+                game_file_eval << (char)best_move.at(0);
                 if(best_move.at(1) < 10) game_file_eval << 0;
                 game_file_eval << best_move.at(1);
                 if(best_move.at(2) < 10) game_file_eval << 0;
@@ -1050,7 +1051,11 @@ void Game::perfect_Bot_turn(char Player){
 void Game::Player_vs_perfect_Bot(){
     cout << "Hinweise: Die Eingabe der Züge muss die Form \"XY\" haben, wobei X die Zeilenkoordinate ist, und Y die Spaltenkoordinate.\nX kann weg gelassen werden, falls es 0 ist. Alle Eingaben müssen Integer sein.\nFalls ein Stein des Gegners nicht bewegt werden soll, kann man ihn wieder auf seine ursprüngliche Position verschieben.\nMöchtest du mit \"X\" oder mit \"O\" spielen?\n";
     char Player;
+    char answer;
+    bool eval = false;
+    bool back = false;
     char Bot;
+    string last_pos;
     cin >> Player;
     while(Player != 'X' && Player != 'O'){
         cout << "Falsche Eingabe. Versuche es nochmal.\n";
@@ -1058,17 +1063,60 @@ void Game::Player_vs_perfect_Bot(){
     }
     if(Player == 'X') Bot = 'O';
     if(Player == 'O') Bot = 'X';
+
+    cout << "Soll nach jedem Zug die Evaluation ausgegeben werden?\n(y/n)\n";
+    cin >> answer;
+    while(answer != 'y' && answer != 'Y' && answer != 'n' && answer != 'N'){
+        cout << "Falsche Eingabe. Versuche es nochmal.\n";
+        cin >> answer;
+    }
+    if(answer == 'Y') answer = 'y';
+    if(answer == 'N') answer = 'n';
+    if(answer == 'y') eval = true;
+
+    cout << "Soll mit zurücknehmen gespielt werden?\n(y/n)\n";
+    cin >> answer;
+    while(answer != 'y' && answer != 'Y' && answer != 'n' && answer != 'N'){
+        cout << "Falsche Eingabe. Versuche es nochmal.\n";
+        cin >> answer;
+    }
+    if(answer == 'Y') answer = 'y';
+    if(answer == 'N') answer = 'n';
+    if(answer == 'y') back = true;
+    
     this->print();
     if(Player == 'X'){
+        if(back) last_pos = this->to_string();
         this->player_turn_first(Player);
+        if(eval) this->display_eval();
         this->perfect_Bot_turn(Bot);
+        if(eval) this->display_eval();
     }else if(Player == 'O'){
         this->Bot2_turn_first(Bot);
+        if(eval) this->display_eval();
+        if(back) last_pos = this->to_string();
         this->player_turn(Player);
+        if(eval) this->display_eval();
     }
     while(!this->full_Board()){
-        if(Player == 'X') this->player_turn(Player);
+        if(Player == 'X'){
+            if(back){
+                this->move_back(last_pos);
+                last_pos = this->to_string();
+                if(this->pieces() == 0){
+                    if(eval) this->display_eval();
+                    this->player_turn_first(Player);
+                }else{
+                    if(eval) this->display_eval();
+                    this->player_turn(Player);
+                } 
+            }else{
+                if(eval) this->display_eval();
+                this->player_turn(Player);
+            }
+        }
         else if(Bot == 'X') this->perfect_Bot_turn(Bot);
+        if(eval) this->display_eval();
         if(this->win(Player) && !this->win(Bot)){
             cout << "Der Spieler hat gewonnen!\n";
             return;
@@ -1079,8 +1127,19 @@ void Game::Player_vs_perfect_Bot(){
             cout << "Unentschieden!\n";
             return;
         }
-        if(Player == 'O') this->player_turn(Player);
+        if(Player == 'O'){
+            if(back){
+                this->move_back(last_pos);
+                last_pos = this->to_string();
+                if(eval) this->display_eval();
+                this->player_turn(Player);
+            }else{
+                if(eval) this->display_eval();
+                this->player_turn(Player);
+            }
+        } 
         else if(Bot == 'O') this->perfect_Bot_turn(Bot);
+        if(eval) this->display_eval();
         if(this->win(Player) && !this->win(Bot)){
             cout << "Der Spieler hat gewonnen!\n";
             return;
@@ -1097,6 +1156,7 @@ void Game::Player_vs_perfect_Bot(){
         cout << i + 1 << endl;
         this->orbit();
         this->print();
+        if(eval) this->display_eval();
         if(this->win(Player) && !this->win(Bot)){
             cout << "Der Spieler hat gewonnen!\n";
             return;
@@ -1109,4 +1169,47 @@ void Game::Player_vs_perfect_Bot(){
         }
     }
     cout << "Unentschieden!\n";
+}
+
+int Game::display_eval() const{
+    string eval;
+    string game;
+    string game_eval;
+    int pieces = this->pieces();
+    if(pieces == 1) eval = "AllPositions1eval.txt";
+    if(pieces == 2) eval = "AllPositions2eval.txt";
+    if(pieces == 3) eval = "AllPositions3eval.txt";
+    if(pieces == 4) eval = "AllPositions4eval.txt";
+    if(pieces == 5) eval = "AllPositions5eval.txt";
+    if(pieces == 6) eval = "AllPositions6eval.txt";
+    if(pieces == 7) eval = "AllPositions7eval.txt";
+    if(pieces == 8) eval = "AllPositions8eval.txt";
+    if(pieces == 9) eval = "AllPositions9eval.txt";
+    if(pieces == 10) eval = "AllPositions10eval.txt";
+    if(pieces == 11) eval = "AllPositions11eval.txt";
+    if(pieces == 12) eval = "AllPositions12eval.txt";
+    if(pieces == 13) eval = "AllPositions13eval.txt";
+    if(pieces == 14) eval = "AllPositions14eval.txt";
+    if(pieces == 15) eval = "AllPositions15eval.txt";
+    if(pieces == 16) eval = "AllPositions16eval.txt";
+    game = this->to_string();
+    game_eval = find_game_eval(eval, game);
+    cout << "Evaluation der Position: " << (int)(game_eval.at(16) - 'A') << endl << endl;
+    return (int)(game_eval.at(16) - 'A');
+}
+
+void Game::move_back(string last_pos){
+    char answer;
+    cout << "Möchtest du zurück ziehen?\n(y/n)\n";
+    cin >> answer;
+    while(answer != 'y' && answer != 'Y' && answer != 'n' && answer != 'N'){
+        cout << "Falsche Eingabe. Versuche es nochmal.\n";
+        cin >> answer;
+    }
+    if(answer == 'Y' || answer == 'y'){
+        for(int i = 0; i<16; i++){
+            M_Feld.at(i) = last_pos.at(i);
+        }
+        this->print();
+    }
 }

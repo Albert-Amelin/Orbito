@@ -4,6 +4,54 @@
 
 int main(){    
 
+    // ifstream game_file("AllPositions16.txt");
+    // ofstream eval_file("AllPositions16eval.txt");
+    // string game;
+    // char draw = 'A';
+    // if(game_file.is_open() && eval_file.is_open()){
+    //     while(getline(game_file, game)){
+    //         eval_file << game;
+    //         if(win(game, 'X') && win(game, 'O')) eval_file << draw << endl;
+    //         else if(win(game, 'X')) eval_file << (char)(draw + 6) << endl;
+    //         else if(win(game, 'O')) eval_file << (char)(draw - 6) << endl;
+    //         else{
+    //             for(int i = 0; i < 5; i++){
+    //                 orbit(game);
+    //                 if(win(game, 'X') && win(game, 'O')){
+    //                     eval_file << draw << endl;
+    //                     break;
+    //                 }else if(win(game, 'X')){
+    //                     eval_file << (char)(draw + 5 - i) << endl;  
+    //                     break;
+    //                 }else if(win(game, 'O')){
+    //                     eval_file << (char)(draw - 5 + i) << endl;
+    //                     break;
+    //                 }else if(i == 4){
+    //                     eval_file << draw << endl;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // game_file.close();
+    // eval_file.close();
+
+    // eval_all_Pos("AllPositions16eval.txt", "AllPositions15.txt", "AllPositions15eval.txt", 'O', 102960, 15);
+    // eval_all_Pos("AllPositions15eval.txt", "AllPositions14.txt", "AllPositions14eval.txt", 'X', 411840, 14);
+    // eval_all_Pos("AllPositions14eval.txt", "AllPositions13.txt", "AllPositions13eval.txt", 'O', 960960, 13);
+    // eval_all_Pos("AllPositions13eval.txt", "AllPositions12.txt", "AllPositions12eval.txt", 'X', 1681680, 12);
+    // eval_all_Pos("AllPositions12eval.txt", "AllPositions11.txt", "AllPositions11eval.txt", 'O', 2018016, 11);
+    // eval_all_Pos("AllPositions11eval.txt", "AllPositions10.txt", "AllPositions10eval.txt", 'X', 2018016, 10);
+    // eval_all_Pos("AllPositions10eval.txt", "AllPositions9.txt", "AllPositions9eval.txt", 'O', 1441440, 9);
+    // eval_all_Pos("AllPositions9eval.txt", "AllPositions8.txt", "AllPositions8eval.txt", 'X', 900900, 8);
+    // eval_all_Pos("AllPositions8eval.txt", "AllPositions7.txt", "AllPositions7eval.txt", 'O', 400400, 7);
+    // eval_all_Pos("AllPositions7eval.txt", "AllPositions6.txt", "AllPositions6eval.txt", 'X', 160160, 6);
+    // eval_all_Pos("AllPositions6eval.txt", "AllPositions5.txt", "AllPositions5eval.txt", 'O', 43680, 5);
+    // eval_all_Pos("AllPositions5eval.txt", "AllPositions4.txt", "AllPositions4eval.txt", 'X', 10920, 4);
+    // eval_all_Pos("AllPositions4eval.txt", "AllPositions3.txt", "AllPositions3eval.txt", 'O', 1680, 3);
+    // eval_all_Pos("AllPositions3eval.txt", "AllPositions2.txt", "AllPositions2eval.txt", 'X', 240, 2);
+    // eval_all_Pos("AllPositions2eval.txt", "AllPositions1.txt", "AllPositions1eval.txt", 'O', 16, 1);
+
     array<char, 16> Feld = {' ', ' ', ' ', ' ',
                             ' ', ' ', ' ', ' ',
                             ' ', ' ', ' ', ' ',
@@ -14,52 +62,6 @@ int main(){
     // G.Player_vs_Bot2();
     G.Player_vs_perfect_Bot();
     
-
-    // eval_all_Pos("AllPositions13eval.txt", "AllPositions12.txt", "AllPositions12eval.txt", 'X', 1681680);
-    // eval_all_Pos("AllPositions12eval.txt", "AllPositions11.txt", "AllPositions11eval.txt", 'O', 2018016);
-    // eval_all_Pos("AllPositions11eval.txt", "AllPositions10.txt", "AllPositions10eval.txt", 'X', 2018016);
-    // eval_all_Pos("AllPositions10eval.txt", "AllPositions9.txt", "AllPositions9eval.txt", 'O', 1441440);
-    // eval_all_Pos("AllPositions9eval.txt", "AllPositions8.txt", "AllPositions8eval.txt", 'X', 900900);
-    // eval_all_Pos("AllPositions8eval.txt", "AllPositions7.txt", "AllPositions7eval.txt", 'O', 400400);
-    // eval_all_Pos("AllPositions7eval.txt", "AllPositions6.txt", "AllPositions6eval.txt", 'X', 160160);
-    // eval_all_Pos("AllPositions6eval.txt", "AllPositions5.txt", "AllPositions5eval.txt", 'O', 43680);
-    // eval_all_Pos("AllPositions5eval.txt", "AllPositions4.txt", "AllPositions4eval.txt", 'X', 10920);
-    // eval_all_Pos("AllPositions4eval.txt", "AllPositions3.txt", "AllPositions3eval.txt", 'O', 1680);
-    // eval_all_Pos("AllPositions3eval.txt", "AllPositions2.txt", "AllPositions2eval.txt", 'X', 240);
-    // eval_all_Pos("AllPositions2eval.txt", "AllPositions1.txt", "AllPositions1eval.txt", 'O', 16);
-    // eval_all_Pos("AllPositions1eval.txt", "AllPositions0.txt", "AllPositions0eval.txt", 'X', 1);
-
-    // ifstream game_file("AllPositions16.txt");
-    // ofstream eval_file("AllPositions16eval.txt");
-    // string game;
-    // if(game_file.is_open() && eval_file.is_open()){
-    //     while(getline(game_file, game)){
-    //         eval_file << game;
-    //         if(win(game, 'X') && win(game, 'O')) eval_file << 1 << endl;
-    //         else if(win(game, 'X')) eval_file << 2 << endl;
-    //         else if(win(game, 'O')) eval_file << 0 << endl;
-    //         else{
-    //             for(int i = 0; i < 5; i++){
-    //                 orbit(game);
-    //                 if(win(game, 'X') && win(game, 'O')){
-    //                     eval_file << 1 << endl;
-    //                     break;
-    //                 }else if(win(game, 'X')){
-    //                     eval_file << 2 << endl;
-    //                     break;
-    //                 }else if(win(game, 'O')){
-    //                     eval_file << 0 << endl;
-    //                     break;
-    //                 }else if(i == 4){
-    //                     eval_file << 1 << endl;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-    // game_file.close();
-    // eval_file.close();
-
 
     // vector<string> allPos;
     // string line;

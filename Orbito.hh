@@ -83,6 +83,8 @@ public:
     int pieces() const;
     void perfect_Bot_turn(char Player);
     void Player_vs_perfect_Bot();
+    int display_eval() const;
+    void move_back(string last_pos);
 };
 
 int quad_to_dec(int n);
@@ -112,6 +114,6 @@ void sort_Pos(string const& file);
 string find_game_eval(string const& eval_file, string game);
 string find_game_eval(vector<string> const& allPos, string const& game);
 
-void eval_all_Pos(string last_eval, string now, string now_eval, char Player, int positions);
+void eval_all_Pos(string last_eval, string now, string now_eval, char Player, int positions, int pieces);
 
 
